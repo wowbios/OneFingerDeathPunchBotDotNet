@@ -15,9 +15,8 @@ namespace OFDPBot
 
         private void Start()
         {
-            const int rateMs = 500;
+            const int rateMs = 100;
             const string windowName = "One Finger Death Punch";
-            // game must be running in small mode
             Process process = null;
             LowLevelKeyboardHook lowLevelHook = null;
             int hooks = 0;
@@ -33,7 +32,7 @@ namespace OFDPBot
                 Console.WriteLine($"POINTS:\nLEFT {left}\nRIGHT {right}");
 
                 var screen = new Screenshooter(rect);
-                var recognizer = new Recognizer();
+                var recognizer = new Recognizer(left, right);
 
                 Console.Write("Press Enter to start");
                 Console.ReadLine();
@@ -71,14 +70,14 @@ namespace OFDPBot
 
         private ((int lx, int ly), (int rx, int ry)) GetPoints(Rect rect)
         {
-            const decimal leftXCoeff = 2.77m;
-            const decimal rightXCoeff = 1.71m;
-            const decimal yCoeff = 1.76m;
+            const decimal leftXCoeff = 2.27m;
+            const decimal rightXCoeff = 1.829m;
+            const decimal yCoeff = 1.91m;
 
             int width = rect.Right - rect.Left;
             int height = rect.Bottom - rect.Top;
 
-            return (
+            ((int lx, int ly), (int rx, int ry)) screenPoint = (
                 (
                     (int)(width / leftXCoeff),
                     (int)(height / yCoeff)
@@ -86,6 +85,10 @@ namespace OFDPBot
                     (int)(width / rightXCoeff), 
                     (int)(height/yCoeff)
                 ));
+
+            Console.WriteLine($"SCREEN POINT: {screenPoint}");
+
+            return screenPoint;
         }
     }
 }
