@@ -1,15 +1,18 @@
 
 using System.Runtime.InteropServices;
 
-[StructLayout(LayoutKind.Sequential)]
-public struct MousePoint
+namespace OFDPBot.WinApi
 {
-    public int X;
-    public int Y;
-
-    public MousePoint(int x, int y)
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MousePoint
     {
-        X = x;
-        Y = y;
+        public int X;
+        public int Y;
+
+        public MousePoint(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }

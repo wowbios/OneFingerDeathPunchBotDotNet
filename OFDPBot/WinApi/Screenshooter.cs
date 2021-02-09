@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace OFDPBot
+namespace OFDPBot.WinApi
 {
     internal class Screenshooter
     {
@@ -12,7 +12,7 @@ namespace OFDPBot
             _rect = rect;
         }
 
-        public Bitmap Make()
+        public Bitmap MakeScreenshot()
         {
             int width = _rect.Right - _rect.Left;
             int height = _rect.Bottom - _rect.Top;

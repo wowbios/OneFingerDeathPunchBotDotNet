@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace OFDPBot
+namespace OFDPBot.WinApi
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect
