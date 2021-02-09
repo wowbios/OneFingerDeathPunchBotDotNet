@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 
 namespace OFDPBot
@@ -13,8 +12,6 @@ namespace OFDPBot
             _left = left;
             _right = right;
         }
-
-        private int count = 0;
 
         public (bool, bool) Recognize(Bitmap bmp) 
             => (

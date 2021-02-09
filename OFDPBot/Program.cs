@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Threading;
+using OFDPBot.WinApi;
 
 namespace OFDPBot
 {
@@ -17,16 +16,12 @@ namespace OFDPBot
         {
             const int rateMs = 100;
             const string windowName = "One Finger Death Punch";
-            Process process = null;
-            LowLevelKeyboardHook lowLevelHook = null;
-            int hooks = 0;
+
             try
             {
-                var window = new WindowFinder(windowName);
+                var window = new WindowManager(windowName);
                 var rect = window.Rectangle;
                 Console.WriteLine($"{windowName} window: {rect}");
-
-                process = Process.GetProcessesByName(windowName)[0];
 
                 var (left, right) = GetPoints(rect);
                 Console.WriteLine($"POINTS:\nLEFT {left}\nRIGHT {right}");
@@ -38,7 +33,9 @@ namespace OFDPBot
                 Console.ReadLine();
                 while (true)
                 {
-                    using Bitmap bmp = screen.Make();
+                    Thread.Sleep(rateMs);
+
+                    using Bitmap bmp = screen.MakeScreenshot();
                     (bool isLeft, bool isRight) = recognizer.Recognize(bmp);
                     if (isLeft && window.TrySendClick(true))
                     {
@@ -51,9 +48,7 @@ namespace OFDPBot
                     else
                     {
                         Console.WriteLine("NONE");
-                    }
-
-                    Thread.Sleep(rateMs);
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -62,14 +57,13 @@ namespace OFDPBot
             }
             finally
             {
-                lowLevelHook?.UnHookKeyboard();
-                process?.Dispose();
-                Console.WriteLine("END" + hooks);
+                Console.WriteLine("END");
             }
         }
 
         private ((int lx, int ly), (int rx, int ry)) GetPoints(Rect rect)
         {
+            // depends on screen and may be different
             const decimal leftXCoeff = 2.27m;
             const decimal rightXCoeff = 1.829m;
             const decimal yCoeff = 1.91m;
