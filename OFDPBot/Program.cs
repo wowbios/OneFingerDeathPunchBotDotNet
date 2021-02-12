@@ -27,14 +27,14 @@ namespace OFDPBot
                 Console.WriteLine($"Tracking: {tracking}");
 
                 var screen = new Screenshooter(rect);
-                var recognizer = new Recognizer(tracking);
+                using var recognizer = new Recognizer(tracking);
 
                 Console.Write("Press Enter to start");
                 Console.ReadLine();
                 bool wasBrawler = false;
                 while (true)
                 {
-                    var timeout = wasBrawler ? rateMs + 200 : rateMs;
+                    var timeout = wasBrawler ? rateMs : rateMs;
                     Thread.Sleep(timeout);
 
                     using Bitmap bmp = screen.MakeScreenshot();
