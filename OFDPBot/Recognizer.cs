@@ -11,8 +11,10 @@ namespace OFDPBot
         private readonly Tracking _tracking;
         private readonly Bitmap _redBrawlSample;
         private readonly Bitmap _blueBrawlSample;
-        // private readonly BitmapData _redBrawlSampleData;
-        // private readonly BitmapData _blueBrawlSampleData;
+        
+        private readonly Bitmap _redBrawlSampleTutorial;
+        private readonly Bitmap _blueBrawlSampleTutorial;
+
         private readonly Stopwatch _watch; 
 
         public Recognizer(Tracking tracking)
@@ -20,18 +22,19 @@ namespace OFDPBot
             _tracking = tracking ?? throw new ArgumentNullException(nameof(tracking));
             _watch = new Stopwatch();
 
-            _redBrawlSample = (Bitmap)Bitmap.FromFile("red_brawl_sample.bmp");
-            // _redBrawlSampleData = ExtractData(_redBrawlSample);
-            _blueBrawlSample = (Bitmap)Bitmap.FromFile("blue_brawl_sample.bmp");
-            // _blueBrawlSampleData = ExtractData(_blueBrawlSample);
+            _redBrawlSample = (Bitmap)Bitmap.FromFile("red_brawl_sample2.bmp");
+            _blueBrawlSample = (Bitmap)Bitmap.FromFile("blue_brawl_sample2.bmp");
+            
+            _redBrawlSampleTutorial = (Bitmap)Bitmap.FromFile("red_brawl_sample.bmp");
+            _blueBrawlSampleTutorial = (Bitmap)Bitmap.FromFile("blue_brawl_sample.bmp");
         }
 
         public void Dispose()
         {
-            // _redBrawlSample.UnlockBits(_redBrawlSampleData);
             _redBrawlSample.Dispose();
-            // _blueBrawlSample.UnlockBits(_blueBrawlSampleData);
             _blueBrawlSample.Dispose();
+            _redBrawlSampleTutorial.Dispose();
+            _blueBrawlSampleTutorial.Dispose();
         }
 
         public (bool, bool) Recognize(Bitmap bmp, out bool isBrawler)
@@ -77,14 +80,20 @@ namespace OFDPBot
         private (bool, bool) CheckBrawlerWithPatternMatching(Bitmap screen)
         {
             screen.RotateFlip(RotateFlipType.Rotate180FlipNone);
-            // screen.Save($"brawler\\search{brawlerCounter++}.bmp");
-            // _redBrawlSample.Save($"brawler\\red.bmp");
-            // _blueBrawlSample.Save($"brawler\\blue.bmp");
+            var thirdW = screen.Width / 3;
+            var thirdH = screen.Height / 3;
+            using var subBmp = (Bitmap)screen.Clone(new Rectangle(thirdW, thirdH, thirdW, thirdH * 2), screen.PixelFormat);
 
-            const double maxTolerance = 0.3;
+            const double maxTolerance = 0.6;
             for(double tolerance = 0; tolerance < maxTolerance; tolerance += 0.1)
             {
-                (var blue, var red) = Find(screen, tolerance);
+                (var blue, var red) = Find(subBmp, _redBrawlSample, _blueBrawlSample, tolerance);
+                if (blue != Rectangle.Empty && red != Rectangle.Empty)
+                {
+                    bool isLeft = blue.Y > red.Y;
+                    return (isLeft, !isLeft);
+                }
+                //     (blue, red) = Find(screen, _redBrawlSampleTutorial, _blueBrawlSampleTutorial, tolerance);
                 if (blue != Rectangle.Empty)
                     return (true, false);
                 if (red != Rectangle.Empty)
@@ -94,10 +103,10 @@ namespace OFDPBot
             return (false, false);
         }
 
-        private (Rectangle blue, Rectangle red) Find(Bitmap bitmap, double tolerance)
+        private (Rectangle blue, Rectangle red) Find(Bitmap bitmap, Bitmap redSample, Bitmap blueSample, double tolerance)
         {
-            var red = SearchBitmap(_redBrawlSample, bitmap, tolerance);
-            var blue = SearchBitmap(_blueBrawlSample, bitmap, tolerance);
+            var red = SearchBitmap(redSample, bitmap, tolerance);
+            var blue = SearchBitmap(blueSample, bitmap, tolerance);
             return (blue, red);
         }
 
