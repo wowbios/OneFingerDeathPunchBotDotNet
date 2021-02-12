@@ -1,5 +1,7 @@
 # OneFingerDeathPunchBotDotNet
 
+Video demonstration (click to watch)
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Nq7hARu4hws/0.jpg)](https://www.youtube.com/watch?v=Nq7hARu4hws)
 
 How it works:
