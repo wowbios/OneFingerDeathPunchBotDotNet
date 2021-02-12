@@ -1,8 +1,6 @@
 # OneFingerDeathPunchBotDotNet
 
-Signature points are drawn at screenshot
-
-![marks](marks.png)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Nq7hARu4hws/0.jpg)](https://www.youtube.com/watch?v=Nq7hARu4hws)
 
 How it works:
 1. Start the game
