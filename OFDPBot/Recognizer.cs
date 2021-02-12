@@ -84,13 +84,14 @@ namespace OFDPBot
             var thirdH = screen.Height / 3;
             using var subBmp = (Bitmap)screen.Clone(new Rectangle(thirdW, thirdH, thirdW, thirdH * 2), screen.PixelFormat);
 
+            const double minTolerance = 0.3;
             const double maxTolerance = 0.6;
-            for(double tolerance = 0; tolerance < maxTolerance; tolerance += 0.1)
+            for(double tolerance = minTolerance; tolerance < maxTolerance; tolerance += 0.1)
             {
                 (var blue, var red) = Find(subBmp, _redBrawlSample, _blueBrawlSample, tolerance);
                 if (blue != Rectangle.Empty && red != Rectangle.Empty)
                 {
-                    bool isLeft = blue.Y > red.Y;
+                    bool isLeft = blue.Y < red.Y;
                     return (isLeft, !isLeft);
                 }
                 //     (blue, red) = Find(screen, _redBrawlSampleTutorial, _blueBrawlSampleTutorial, tolerance);
