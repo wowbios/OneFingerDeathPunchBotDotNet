@@ -34,7 +34,7 @@ namespace OFDPBot
                 bool wasBrawler = false;
                 while (true)
                 {
-                    var timeout = wasBrawler ? rateMs : rateMs;
+                    var timeout = wasBrawler ? rateMs : rateMs + 50;
                     Thread.Sleep(timeout);
 
                     using Bitmap bmp = screen.MakeScreenshot();
