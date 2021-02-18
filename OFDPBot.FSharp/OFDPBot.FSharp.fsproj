@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common.fs" />
     <Compile Include="WinApi.fs" />
     <Compile Include="Screenshooter.fs" />
     <Compile Include="Tracking.fs" />

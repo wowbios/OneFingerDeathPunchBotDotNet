@@ -2,67 +2,49 @@ module Tracking
 
 open OFDPBot.FSharp
 
-type Point = 
-    struct
-        val X : int
-        val Y : int
-        new (x:int, y:int) = { X = x; Y = y }
-    end
+type [<Struct>] Point = {
+    X: int
+    Y: int
+}
 
-type BrawlerTracking =
-    struct
-        val Top : Point
-        val Bottom : Point
-        new (top : Point, bottom: Point) =
-            {
-                Top = top;
-                Bottom = bottom;
-            }
-    end
+type [<Struct>] BrawlerTracking = {
+    Top: Point
+    Bottom: Point
+}
 
-type Tracking =
-    struct
-        val Left : Point
-        val Right : Point
-        val HealthBar : Point
-        val BrawlerTracking : BrawlerTracking
-        new (left:Point, right:Point, healthBar: Point, brawlerTracking: BrawlerTracking) =
-            {
-                Left = left;
-                Right = right;
-                HealthBar = healthBar;
-                BrawlerTracking = brawlerTracking;
-            }
-    end
+type [<Struct>] Tracking = {
+    Left: Point
+    Right: Point
+    HealthBar: Point
+    BrawlerTracking: BrawlerTracking
+}
 
-[<Literal>]
-let private left1XCoeff = 0.46
-[<Literal>]
-let private right1XCoeff = 0.53
-[<Literal>]
-let private yCoeff = 0.71
-[<Literal>]
-let private b_XCoeff = 0.5
-[<Literal>]
-let private b_topYCoeff = 0.06
-[<Literal>]
-let private b_botYCoeff = 0.364
-[<Literal>]
-let private lhealthXCoeff = 0.436
-[<Literal>]
-let private lhealthYCoeff = 0.055
+let [<Literal>] private left1XCoeff = 0.46
 
-let public Get(rect : InteropNative.Rect) =
+let [<Literal>] private right1XCoeff = 0.53
 
+let [<Literal>] private yCoeff = 0.71
+
+let [<Literal>] private b_XCoeff = 0.5
+
+let [<Literal>] private b_topYCoeff = 0.06
+
+let [<Literal>] private b_botYCoeff = 0.364
+
+let [<Literal>] private lhealthXCoeff = 0.436
+
+let [<Literal>] private lhealthYCoeff = 0.055
+
+let get (rect: InteropNative.Rect) =
     let w = float(rect.Right - rect.Left)
     let h = float(rect.Bottom - rect.Top)
-    let getPoint xc yc = Point(int(xc * w), int(h * yc))
-
-    Tracking(
-        getPoint left1XCoeff yCoeff,
-        getPoint right1XCoeff yCoeff,
-        getPoint lhealthXCoeff lhealthYCoeff,
-        BrawlerTracking(
-            getPoint b_XCoeff b_topYCoeff,
-            getPoint b_XCoeff b_botYCoeff
-        ))
+    let point xc yc = { X = int(xc * w); Y = int(h * yc) }
+    {
+        Left = point left1XCoeff yCoeff
+        Right = point right1XCoeff yCoeff
+        HealthBar = point lhealthXCoeff lhealthYCoeff
+        BrawlerTracking = {
+            Top = point b_XCoeff b_topYCoeff
+            Bottom = point b_XCoeff b_botYCoeff
+        }
+    }
